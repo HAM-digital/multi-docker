@@ -18,3 +18,16 @@ after_success:
   - docker push hamdigital/multi-nginx
   - docker push hamdigital/multi-server
   - docker push hamdigital/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-2
+  app: multi-docker
+  env: MutiDocker-env
+  bucket_name: elasticbeanstalk-eu-west-2-185738626432
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
