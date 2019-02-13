@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t hamdigital/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run hamdigital/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t hamdigital/multi-client ./client
+  - docker build -t hamdigital/multi-nginx ./nginx
+  - docker build -t hamdigital/multi-server ./server
+  - docker build -t hamdigital/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push hamdigital/multi-client
+  - docker push hamdigital/multi-nginx
+  - docker push hamdigital/multi-server
+  - docker push hamdigital/multi-worker
